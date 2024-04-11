@@ -2,6 +2,7 @@
 #include <vector>    
 #include <iostream>
 #include <functional>
+#include <stdlib.h>
  
 #include "ftxui/component/captured_mouse.hpp"
 #include "ftxui/component/component.hpp"           
@@ -44,4 +45,10 @@ int main()
         topLvSelectedDirFullPath + "/" + firstLvContentNames[selected];
 
     std::cout << "Selected: " << firstLvSelectedDirFullPath << std::endl;
+
+    std::string showFileCommand = 
+        "clear && cat " + ROOT_DIR + firstLvSelectedDirFullPath 
+        + " | perl -MHTML::Entities -pe 'decode_entities($_);'";
+
+    system(showFileCommand.c_str());
 }

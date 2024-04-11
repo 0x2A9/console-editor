@@ -16,7 +16,9 @@
 
 
 ## Dependencies
+- Platform - Linux
 - GCC `v11` and higher
 - CMake (version with FetchContent support)
+- perl `v5.36.0` and higher
 - Libraries: 
     - `ftxui` - license [MIT](https://github.com/ArthurSonzogni/FTXUI/blob/main/LICENSE)
