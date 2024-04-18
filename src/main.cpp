@@ -5,12 +5,40 @@
 #include <stdlib.h>
  
 #include "ftxui/component/captured_mouse.hpp"
-#include "ftxui/component/component.hpp"           
+#include "ftxui/component/component.hpp"    
+#include "ftxui/component/component_base.hpp"       
 #include "ftxui/component/component_options.hpp"   
 #include "ftxui/component/screen_interactive.hpp"  
+#include "ftxui/dom/elements.hpp" 
+#include "pugixml.hpp"
 
 #include "utils/fs.h"
  
+ftxui::ButtonOption style() {
+  auto option = ftxui::ButtonOption::Animated();
+  option.transform = [](const ftxui::EntryState& s) {
+    auto element = ftxui::text(s.label);
+    if (s.focused) {
+      element |= ftxui::bold;
+    }
+    return element | ftxui::center | ftxui::borderEmpty | ftxui::flex;
+  };
+  return option;
+}
+
+enum ParagraphTag {
+    Name = 1,
+    Ingredient = 2,
+    Direction = 3
+};
+
+std::unordered_map<std::string, ParagraphTag> tagMapping = 
+{
+    { "Name", ParagraphTag::Name },
+    { "Ingredient", ParagraphTag::Ingredient },
+    { "Direction", ParagraphTag::Direction }
+};
+
 int main() 
 {
     /* common */
@@ -46,9 +74,61 @@ int main()
 
     std::cout << "Selected: " << firstLvSelectedDirFullPath << std::endl;
 
-    std::string showFileCommand = 
-        "clear && cat " + ROOT_DIR + firstLvSelectedDirFullPath 
-        + " | perl -MHTML::Entities -pe 'decode_entities($_);'";
 
-    system(showFileCommand.c_str());
+    /* xml file interaction */
+    std::string myText;
+	std::string aLLText;
+    std::string name;
+    std::string ing;
+    std::string description;
+
+    pugi::xml_document doc;
+    auto fullPath = ROOT_DIR + firstLvSelectedDirFullPath;
+    if (!doc.load_file(fullPath.c_str())) return -1;
+
+    for (pugi::xml_node node: doc)
+    {
+        for (pugi::xml_node child: node.children())
+        {
+            auto tag = static_cast<std::string>(child.name());
+            auto pt = tagMapping[tag];
+
+            switch(pt) {
+                case ParagraphTag::Name: 
+                    name = static_cast<std::string>(child.child_value());
+                    aLLText += "Name: " + name + "\n";
+                    break;
+                case ParagraphTag::Ingredient: 
+                    ing = static_cast<std::string>(child.child_value("IngredientName"));
+                    aLLText += "Ingredient: " + ing + "\n";
+                    break;
+                case ParagraphTag::Direction: 
+                    description = static_cast<std::string>(child.child_value("DirectionText"));
+                    aLLText += "Step: " + description + "\n";
+                    break;
+            }
+        }
+    }
+
+    /* formating and rendering */
+    auto btn_dec_01 = ftxui::Button("Edit", [&] {}, style());
+    auto btn_inc_01 = ftxui::Button("Back", [&] {}, style());
+
+    int row = 0;
+    auto textarea_1 = ftxui::Input(&aLLText);
+     auto buttons = ftxui::Container::Vertical({
+        ftxui::Container::Horizontal({btn_dec_01, btn_inc_01}, &row) | ftxui::flex,
+        ftxui::Container::Horizontal({textarea_1}, &row) | ftxui::flex,
+    });
+
+    auto component = ftxui::Renderer(buttons, [&] {
+        return ftxui::vbox({
+                ftxui::text("Choose the action"),
+                ftxui::separator(),
+                buttons->Render() | ftxui::flex,
+            }) |
+            ftxui::flex | ftxui::border;
+    });
+    
+    screen.Loop(component);
 }

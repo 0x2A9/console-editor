@@ -21,4 +21,7 @@
 - CMake (version with FetchContent support)
 - perl `v5.36.0` and higher
 - Libraries: 
-    - `ftxui` - license [MIT](https://github.com/ArthurSonzogni/FTXUI/blob/main/LICENSE)
+    |   Name   |    Type   |                            Link                                  |
+    |----------|-----------|------------------------------------------------------------------|
+    |  `ftxui` |  license  | [MIT](https://github.com/ArthurSonzogni/FTXUI/blob/main/LICENSE) |
+    |  `pugi`  |  license  | [MIT](https://github.com/zeux/pugixml/blob/master/LICENSE.md)    |  
