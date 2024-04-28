@@ -13,8 +13,13 @@ FetchContent_Declare(pugixml
 FetchContent_MakeAvailable(ftxui pugixml)
  
 project(console-editor LANGUAGES CXX VERSION 1.0.0)
+
+include_directories(include)
+
 add_executable(
   console-editor 
+  include/utils/fs.hpp
+  include/xml_processors/processor_base.hpp
   src/main.cpp 
   src/utils/fs.cpp
 )

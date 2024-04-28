@@ -12,7 +12,7 @@
 #include "ftxui/dom/elements.hpp" 
 #include "pugixml.hpp"
 
-#include "utils/fs.h"
+#include "utils/fs.hpp" 
  
 ftxui::ButtonOption style() {
   auto option = ftxui::ButtonOption::Animated();
