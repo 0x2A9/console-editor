@@ -25,3 +25,4 @@
     |----------|-----------|------------------------------------------------------------------|
     |  `ftxui` |  license  | [MIT](https://github.com/ArthurSonzogni/FTXUI/blob/main/LICENSE) |
     |  `pugi`  |  license  | [MIT](https://github.com/zeux/pugixml/blob/master/LICENSE.md)    |  
+    
