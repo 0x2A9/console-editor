@@ -9,81 +9,74 @@
 
 namespace fs = std::filesystem;
 
-static bool isDir(const char* path) 
-{
-    // this structure would distinguish a file from adirectory
-    struct stat sb;
+static bool IsDir(const char* path) {
+  // this structure would distinguish a file from adirectory
+  struct stat sb;
 
-    // checking whether the path points to a directory or not
-    return stat(path, &sb) == 0 && (sb.st_mode & S_IFDIR);
+  // checking whether the path points to a directory or not
+  return stat(path, &sb) == 0 && (sb.st_mode & S_IFDIR);
 }
 
-void renameDirs(std::string path, std::string postfix)
-{
-    auto fullPaths = getFullPathsToContent(path).dirs;
+void RenameDirs(std::string path, std::string postfix) {
+  auto full_paths = GetFullPathsToContent(path).dirs;
 
-    for (auto dir: fullPaths) {
-        auto n = splitName(splitPath(dir).name).n;
+  for (auto dir: full_paths) {
+    auto n = SplitName(SplitPath(dir).name).n;
 
-        std::string newName = ROOT_DIR + path.c_str() + "/" + n + "_" + postfix;
-        rename(dir.c_str(), newName.c_str());
-    }
+    std::string new_name = *path.c_str() + "/" + n + "_" + postfix;
+    rename(dir.c_str(), new_name.c_str());
+  }
 }
 
-struct Content getFullPathsToContent(std::string path) 
-{
-    path = ROOT_DIR + path;
-    struct Content fullPaths;
+struct Content GetFullPathsToContent(std::string path) {
+  struct Content full_paths;
 
-    for (const auto& item : fs::directory_iterator(path)) {
-        // converting the path to const char * in the subsequent lines
-        fs::path outfilename = item.path();
-        std::string outfilename_str = outfilename.string();
-        const char* path = outfilename_str.c_str();
+  for (const auto& item : fs::directory_iterator(path)) {
+    // converting the path to const char * in the subsequent lines
+    fs::path out_file_name = item.path();
+    std::string out_file_name_str = out_file_name.string();
+    const char* path = out_file_name_str.c_str();
 
-        fullPaths.all.push_back(path);
+    full_paths.all.push_back(path);
 
-        isDir(path) ? fullPaths.dirs.push_back(path) : fullPaths.files.push_back(path);
-    }
+    IsDir(path) ? full_paths.dirs.push_back(path) : full_paths.files.push_back(path);
+  }
 
-    return fullPaths;
+  return full_paths;
 }
 
-std::vector<std::string> getResourcesNames(std::vector<std::string> fullPaths)
-{
-    std::vector<std::string> names;
+std::vector<std::string> GetResourcesNames(std::vector<std::string> full_paths) {
+  std::vector<std::string> names;
 
-    for (auto path: fullPaths) {
-        names.push_back(splitPath(path).name);
-    }
-    
-    return names;
+  for (auto path: full_paths) {
+    names.push_back(SplitPath(path).name);
+  }
+  
+  return names;
 }
 
-struct ResourcePath splitPath(std::string& str)
-{
-    std::size_t found = str.find_last_of("/\\");
-    std::string path = str.substr(0, found);
-    std::string name = str.substr(found + 1);
+struct ResourcePath SplitPath(std::string& str) {
+  std::size_t found = str.find_last_of("/\\");
+  std::string path = str.substr(0, found);
+  std::string name = str.substr(found + 1);
 
-    struct ResourcePath rp = {
-        path, 
-        name
-    };
+  struct ResourcePath rp = {
+    path, 
+    name
+  };
 
-    return rp;
+  return rp;
 }
 
-struct ResourceName splitName(std::string str) 
-{
-    std::size_t found = str.find("_");
-    std::string n = str.substr(0, found);
-    std::string postfix = str.substr(found + 1);
+struct ResourceName SplitName(std::string str) {
+  std::size_t found = str.find("_");
+  std::string n = str.substr(0, found);
+  std::string postfix = str.substr(found + 1);
 
-    struct ResourceName rn = {
-        postfix,
-        n
-    };
+  struct ResourceName rn = {
+    postfix,
+    n
+  };
 
-    return rn;
+  return rn;
 }

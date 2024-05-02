@@ -13,6 +13,11 @@
 
 #include "utils/fs.hpp" 
 #include "xml_processors/processor.hpp"
+
+// executable is placed inside the `build` dir
+const char *ROOT_DIR = "./..";
+// the path is relative to the project root
+const char *DATA_DIR = "/data";
  
 ftxui::ButtonOption Style() {
   auto option = ftxui::ButtonOption::Animated();
@@ -26,8 +31,7 @@ ftxui::ButtonOption Style() {
   return option;
 }
 
-int main() 
-{
+int main() {
   /* common */
   auto screen = ftxui::ScreenInteractive::TerminalOutput();
   int selected = 0;
@@ -36,48 +40,48 @@ int main()
   option.on_enter = screen.ExitLoopClosure();
 
   /* top level dir */
-  auto topLvDirsNames = 
-      getResourcesNames(getFullPathsToContent(DATA_DIR).dirs);
+  auto data_full_path = static_cast<std::string>(ROOT_DIR) + 
+                        static_cast<std::string>(DATA_DIR);
+  auto top_lv_dirs_names = GetResourcesNames(GetFullPathsToContent(data_full_path).dirs);
 
-  auto topLvMenu = Menu(&topLvDirsNames, &selected, option);
-  screen.Loop(topLvMenu);
+  auto top_lv_menu = Menu(&top_lv_dirs_names, &selected, option);
+  screen.Loop(top_lv_menu);
 
-  auto topLvSelectedDirFullPath = 
-      DATA_DIR + "/" + topLvDirsNames[selected];
+  auto top_lv_selected_dir_full_path = 
+      static_cast<std::string>(DATA_DIR) + "/" + top_lv_dirs_names[selected];
 
-  std::cout << "Selected: " << topLvSelectedDirFullPath << std::endl;
+  std::cout << "Selected: >" << top_lv_selected_dir_full_path << std::endl;
   
   /* first level dir */
-  auto firstLvContentNames = 
-      getResourcesNames(getFullPathsToContent(topLvSelectedDirFullPath).all);
+  auto first_lv_content_names = 
+      GetResourcesNames(GetFullPathsToContent(ROOT_DIR + top_lv_selected_dir_full_path).all);
 
   selected = 0;
 
-  auto selectedDirMenu = Menu(&firstLvContentNames, &selected, option);
-  screen.Loop(selectedDirMenu);
+  auto selected_dir_menu = Menu(&first_lv_content_names, &selected, option);
+  screen.Loop(selected_dir_menu);
 
-  auto firstLvSelectedDirFullPath = 
-      topLvSelectedDirFullPath + "/" + firstLvContentNames[selected];
+  auto first_lvs_selected_dir_full_path = 
+      top_lv_selected_dir_full_path + "/" + first_lv_content_names[selected];
 
-  std::cout << "Selected: " << firstLvSelectedDirFullPath << std::endl;
-
+  std::cout << "Selected: " << first_lvs_selected_dir_full_path << std::endl;
 
   /* xml file interaction */
-  auto fullPath = ROOT_DIR + firstLvSelectedDirFullPath;
+  auto full_path = ROOT_DIR + first_lvs_selected_dir_full_path;
   
-  auto proc = RecipesProc(fullPath);
+  auto proc = RecipesProc(full_path);
   
-  std::string allText = proc->StringFromXml();
+  std::string all_text = proc->StringFromXml();
 
   /* formating and rendering */
-  auto btn_dec_01 = ftxui::Button("Edit", [&] {}, Style());
-  auto btn_inc_01 = ftxui::Button("Back", [&] {}, Style());
+  auto btn_edit = ftxui::Button("Edit", [&] {}, Style());
+  auto btn_back = ftxui::Button("Back", [&] {}, Style());
 
   int row = 0;
-  auto textarea_1 = ftxui::Input(&allText);
+  auto content = ftxui::Input(&all_text);
   auto buttons = ftxui::Container::Vertical({
-    ftxui::Container::Horizontal({btn_dec_01, btn_inc_01}, &row) | ftxui::flex,
-    ftxui::Container::Horizontal({textarea_1}, &row) | ftxui::flex,
+    ftxui::Container::Horizontal({btn_edit, btn_back}, &row) | ftxui::flex,
+    ftxui::Container::Horizontal({content}, &row) | ftxui::flex,
   });
 
   auto component = ftxui::Renderer(buttons, [&] {
