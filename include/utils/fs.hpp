@@ -23,6 +23,7 @@ struct Content {
 void RenameDirs(std::string path, std::string postfix);
 struct Content GetFullPathsToContent(std::string path);
 std::vector<std::string> GetResourcesNames(std::vector<std::string> full_paths);
+std::string GetFileContent(std::string path);
 struct ResourcePath SplitPath(std::string& str);
 struct ResourceName SplitName(std::string str);
 
