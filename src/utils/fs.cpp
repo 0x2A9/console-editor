@@ -4,6 +4,7 @@
 #include <sys/stat.h>
 #include <vector>
 #include <unordered_map>
+#include <fstream>
 
 #include "utils/fs.hpp"
 
@@ -53,6 +54,20 @@ std::vector<std::string> GetResourcesNames(std::vector<std::string> full_paths) 
   }
   
   return names;
+}
+
+std::string GetFileContent(std::string path) {
+  std::string line;
+  std::ifstream f(path);
+  std::string all_text;
+
+  while (getline(f, line)) {
+    all_text += line + "\n";
+  }
+
+  f.close();
+
+  return all_text;
 }
 
 struct ResourcePath SplitPath(std::string& str) {

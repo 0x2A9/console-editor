@@ -61,34 +61,40 @@ int main() {
   auto selected_dir_menu = Menu(&first_lv_content_names, &selected, option);
   screen.Loop(selected_dir_menu);
 
-  auto first_lvs_selected_dir_full_path = 
+  auto first_lv_selected_dir_full_path = 
       top_lv_selected_dir_full_path + "/" + first_lv_content_names[selected];
 
-  std::cout << "Selected: " << first_lvs_selected_dir_full_path << std::endl;
-
   /* xml file interaction */
-  auto full_path = ROOT_DIR + first_lvs_selected_dir_full_path;
-  
-  auto proc = RecipesProc(full_path);
-  
-  std::string all_text = proc->StringFromXml();
+  auto full_path = ROOT_DIR + first_lv_selected_dir_full_path;
+
+  // auto proc = RecipesProc(full_path);
+  // auto all_text = proc->StringFromXml();
+
+  auto all_text = GetFileContent(full_path);
 
   /* formating and rendering */
-  auto btn_edit = ftxui::Button("Edit", [&] {}, Style());
+  auto btn_save = ftxui::Button("Save", [&] {}, Style());
   auto btn_back = ftxui::Button("Back", [&] {}, Style());
 
   int row = 0;
-  auto content = ftxui::Input(&all_text);
-  auto buttons = ftxui::Container::Vertical({
-    ftxui::Container::Horizontal({btn_edit, btn_back}, &row) | ftxui::flex,
-    ftxui::Container::Horizontal({content}, &row) | ftxui::flex,
+
+  ftxui::InputOption input_style = ftxui::InputOption::Spacious();
+
+  auto content = ftxui::Input(&all_text, input_style);
+  auto form = ftxui::Container::Vertical({
+    ftxui::Container::Horizontal({btn_save, btn_back}, &row) | ftxui::flex,
+    ftxui::Container::Horizontal({content}, &row) | 
+    ftxui::flex | 
+    ftxui::vscroll_indicator | 
+    ftxui::frame | 
+    ftxui::size(ftxui::HEIGHT, ftxui::LESS_THAN, 25),
   });
 
-  auto component = ftxui::Renderer(buttons, [&] {
+  auto component = ftxui::Renderer(form, [&] {
     return ftxui::vbox({
-      ftxui::text("Choose the action"),
+      ftxui::text("Choose the action:"),
       ftxui::separator(),
-      buttons->Render() | ftxui::flex,
+      form->Render() | ftxui::flex,
     }) |
     ftxui::flex | ftxui::border;
   });
