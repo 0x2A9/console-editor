@@ -1,4 +1,6 @@
 #include <memory>
+#include <map>
+#include <string>
 
 #include "xml_processors/processor_base.hpp"
 #include "pugixml.hpp"
@@ -15,8 +17,34 @@ class RecipesProcessor : public ProcessorBase {
 
   std::string StringFromXml() override {
     std::string full_text;
+
+    this->ParseXml();
+
+    for (auto [index, item]: this->ingredients) {
+      this->content += "Ingredient: " + item + "\n";
+    }
+
+    for (auto [index, item]: this->steps) {
+      this->content += "Step: " + item + "\n";
+    }
+
+    return this->content;
+  }
+  
+ protected:
+  std::unordered_map<std::string, ParagraphTag> mapping = {
+    { "Name", ParagraphTag::Name },
+    { "Ingredient", ParagraphTag::Ingredient },
+    { "Direction", ParagraphTag::Direction },
+  };
+
+  std::map<int, std::string> ingredients;
+  std::map<int, std::string> steps;
+
+  void ParseXml() {
     std::string name;
     std::string ingredient;
+    int index;
     std::string description;
 
     for (pugi::xml_node node: this->doc) {
@@ -27,29 +55,24 @@ class RecipesProcessor : public ProcessorBase {
         switch(pt) {
           case ParagraphTag::Name: 
             name = static_cast<std::string>(child.child_value());
-            full_text += "Name: " + name + "\n";
+            this->content += "Name: " + name + "\n";
             break;
           case ParagraphTag::Ingredient: 
             ingredient = static_cast<std::string>(child.child_value("IngredientName"));
-            full_text += "Ingredient: " + ingredient + "\n";
+            index = std::stoi(static_cast<std::string>(child.child_value("DisplayOrder")));
+            this->ingredients[index] = ingredient;
             break;
           case ParagraphTag::Direction: 
             description = static_cast<std::string>(child.child_value("DirectionText"));
-            full_text += "Step: " + description + "\n";
+            index = std::stoi(static_cast<std::string>(child.child_value("DisplayOrder")));
+            this->steps[index] = description;
             break;
         }
       }
     }
-
-    return full_text;
   }
 
-  protected:
-   std::unordered_map<std::string, ParagraphTag> mapping = {
-    { "Name", ParagraphTag::Name },
-    { "Ingredient", ParagraphTag::Ingredient },
-    { "Direction", ParagraphTag::Direction },
-   };
+  std::string content;
 };
 
 std::shared_ptr<ProcessorBase> RecipesProc(std::string path) {

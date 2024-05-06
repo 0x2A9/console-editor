@@ -13,27 +13,12 @@
 
 #include "utils/fs.hpp" 
 #include "xml_processors/processor.hpp"
+#include "utils/ui.hpp"
 
 // executable is placed inside the `build` dir
 const char *ROOT_DIR = "./..";
 // the path is relative to the project root
 const char *DATA_DIR = "/data";
- 
-ftxui::ButtonOption ButtonStyle() {
-  auto option = ftxui::ButtonOption::Animated();
-  option.transform = [](const ftxui::EntryState& s) {
-    auto element = ftxui::text(s.label);
-    if (s.focused) {
-      element |= ftxui::bold;
-    }
-    return element | ftxui::center | ftxui::borderEmpty | ftxui::flex;
-  };
-  return option;
-}
-
-ftxui::InputOption InputStyle() {
-   return ftxui::InputOption::Spacious();
-}
 
 int main() {
   /* common */
@@ -68,41 +53,22 @@ int main() {
 
   /* xml file interaction */
   auto full_path = ROOT_DIR + first_lv_selected_dir_full_path;
-
-  // auto proc = RecipesProc(full_path);
-  // auto all_text = proc->StringFromXml();
-
-  auto all_text = GetFileContent(full_path);
+  auto raw_content = GetFileContent(full_path);
 
   /* formating and rendering */
-  auto btn_save = ftxui::Button("Save", [&screen, full_path, &all_text] { 
-    screen.Exit(); WriteContentToFile(full_path, all_text); 
+  auto btn_exit = CreateExitButton("Exit", screen);
+
+  auto btn_edit = ftxui::Button("Edit", [&screen, full_path, &raw_content] { 
+    auto btn_save = ftxui::Button("Save", [&screen, full_path, &raw_content] { 
+      screen.Exit(); 
+      WriteContentToFile(full_path, raw_content); 
+    }, ButtonStyle());
+
+    auto btn_back = CreateExitButton("Back", screen);
+    CreateForm(&raw_content, {btn_save, btn_back}, screen);
   }, ButtonStyle());
 
-  auto btn_back = ftxui::Button("Back", [&screen, top_lv_menu] { 
-    screen.Loop(top_lv_menu); 
-  }, ButtonStyle());
+  auto content = RecipesProc(full_path)->StringFromXml();
 
-  int row = 0;
-
-  auto content = ftxui::Input(&all_text, InputStyle());
-  auto form = ftxui::Container::Vertical({
-    ftxui::Container::Horizontal({btn_save, btn_back}, &row) | ftxui::flex,
-    ftxui::Container::Horizontal({content}, &row) | 
-    ftxui::flex | 
-    ftxui::vscroll_indicator | 
-    ftxui::frame | 
-    ftxui::size(ftxui::HEIGHT, ftxui::LESS_THAN, 25),
-  });
-
-  auto component = ftxui::Renderer(form, [&] {
-    return ftxui::vbox({
-      ftxui::text("Choose the action:"),
-      ftxui::separator(),
-      form->Render() | ftxui::flex,
-    }) |
-    ftxui::flex | ftxui::border;
-  });
-  
-  screen.Loop(component);
+  CreateForm(&content, {btn_edit, btn_exit}, screen);
 }
