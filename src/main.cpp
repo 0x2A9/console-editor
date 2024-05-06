@@ -19,7 +19,7 @@ const char *ROOT_DIR = "./..";
 // the path is relative to the project root
 const char *DATA_DIR = "/data";
  
-ftxui::ButtonOption Style() {
+ftxui::ButtonOption ButtonStyle() {
   auto option = ftxui::ButtonOption::Animated();
   option.transform = [](const ftxui::EntryState& s) {
     auto element = ftxui::text(s.label);
@@ -29,6 +29,10 @@ ftxui::ButtonOption Style() {
     return element | ftxui::center | ftxui::borderEmpty | ftxui::flex;
   };
   return option;
+}
+
+ftxui::InputOption InputStyle() {
+   return ftxui::InputOption::Spacious();
 }
 
 int main() {
@@ -49,8 +53,6 @@ int main() {
 
   auto top_lv_selected_dir_full_path = 
       static_cast<std::string>(DATA_DIR) + "/" + top_lv_dirs_names[selected];
-
-  std::cout << "Selected: >" << top_lv_selected_dir_full_path << std::endl;
   
   /* first level dir */
   auto first_lv_content_names = 
@@ -73,14 +75,17 @@ int main() {
   auto all_text = GetFileContent(full_path);
 
   /* formating and rendering */
-  auto btn_save = ftxui::Button("Save", [&] {}, Style());
-  auto btn_back = ftxui::Button("Back", [&] {}, Style());
+  auto btn_save = ftxui::Button("Save", [&screen, full_path, &all_text] { 
+    screen.Exit(); WriteContentToFile(full_path, all_text); 
+  }, ButtonStyle());
+
+  auto btn_back = ftxui::Button("Back", [&screen, top_lv_menu] { 
+    screen.Loop(top_lv_menu); 
+  }, ButtonStyle());
 
   int row = 0;
 
-  ftxui::InputOption input_style = ftxui::InputOption::Spacious();
-
-  auto content = ftxui::Input(&all_text, input_style);
+  auto content = ftxui::Input(&all_text, InputStyle());
   auto form = ftxui::Container::Vertical({
     ftxui::Container::Horizontal({btn_save, btn_back}, &row) | ftxui::flex,
     ftxui::Container::Horizontal({content}, &row) | 

@@ -70,6 +70,14 @@ std::string GetFileContent(std::string path) {
   return all_text;
 }
 
+void WriteContentToFile(std::string path, std::string content) {
+  std::ofstream f(path);
+
+  f << content;
+
+  f.close();
+}
+
 struct ResourcePath SplitPath(std::string& str) {
   std::size_t found = str.find_last_of("/\\");
   std::string path = str.substr(0, found);
