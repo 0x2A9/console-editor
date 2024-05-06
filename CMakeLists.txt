@@ -19,10 +19,12 @@ include_directories(include)
 add_executable(
   console-editor 
   include/utils/fs.hpp
+  include/utils/ui.hpp
   include/xml_processors/processor_base.hpp
   include/xml_processors/processor.hpp
   src/main.cpp 
   src/utils/fs.cpp
+  src/utils/ui.cpp
   src/xml_processors/processor.cpp
   src/xml_processors/recipes.cpp
 )
