@@ -3,7 +3,7 @@
 
 ftxui::ButtonOption ButtonStyle() {
   auto option = ftxui::ButtonOption::Animated();
-  option.transform = [](const ftxui::EntryState& s) {
+  option.transform = [](const ftxui::EntryState &s) {
     auto element = ftxui::text(s.label);
     if (s.focused) {
       element |= ftxui::bold;
@@ -17,13 +17,13 @@ ftxui::InputOption InputStyle() {
   return ftxui::InputOption::Spacious();
 }
 
-ftxui::Component CreateExitButton(std::string name, ftxui::ScreenInteractive &screen) {
+ftxui::Component CreateExitButton(const std::string &name, ftxui::ScreenInteractive &screen) {
   return ftxui::Button(name, [&screen] { 
     screen.Exit(); 
   }, ButtonStyle());
 }
 
-void CreateForm(std::string *data, ftxui::Components cmps, ftxui::ScreenInteractive &screen) {
+void CreateForm(std::string *data, const ftxui::Components &cmps, ftxui::ScreenInteractive &screen) {
   int row = 0;
 
   auto input = ftxui::Input(data, InputStyle());

@@ -13,7 +13,7 @@ enum ParagraphTag {
 
 class RecipesProcessor : public ProcessorBase {
  public:
-  RecipesProcessor(std::string path) : ProcessorBase(path) {};
+  explicit RecipesProcessor(const std::string &path) : ProcessorBase(path) {};
 
   std::string StringFromXml() override {
     std::string full_text;
@@ -32,6 +32,37 @@ class RecipesProcessor : public ProcessorBase {
   }
   
  protected:
+void ParseXml() {
+    std::string name;
+    std::string ingredient;
+    int index;
+    std::string description;
+
+    for (pugi::xml_node node: this->doc) {
+        for (pugi::xml_node child: node.children()) {
+            auto tag = static_cast<std::string>(child.name());
+            auto pt = this->mapping[tag];
+
+            switch(pt) {
+                case ParagraphTag::Name:
+                    name = static_cast<std::string>(child.child_value());
+                    this->content += "Name: " + name + "\n";
+                    break;
+                case ParagraphTag::Ingredient:
+                    ingredient = static_cast<std::string>(child.child_value("IngredientName"));
+                    index = std::stoi(static_cast<std::string>(child.child_value("DisplayOrder")));
+                    this->ingredients[index] = ingredient;
+                    break;
+                case ParagraphTag::Direction:
+                    description = static_cast<std::string>(child.child_value("DirectionText"));
+                    index = std::stoi(static_cast<std::string>(child.child_value("DisplayOrder")));
+                    this->steps[index] = description;
+                    break;
+            }
+        }
+    }
+}
+
   std::unordered_map<std::string, ParagraphTag> mapping = {
     { "Name", ParagraphTag::Name },
     { "Ingredient", ParagraphTag::Ingredient },
@@ -40,38 +71,6 @@ class RecipesProcessor : public ProcessorBase {
 
   std::map<int, std::string> ingredients;
   std::map<int, std::string> steps;
-
-  void ParseXml() {
-    std::string name;
-    std::string ingredient;
-    int index;
-    std::string description;
-
-    for (pugi::xml_node node: this->doc) {
-      for (pugi::xml_node child: node.children()) {
-        auto tag = static_cast<std::string>(child.name());
-        auto pt = this->mapping[tag];
-
-        switch(pt) {
-          case ParagraphTag::Name: 
-            name = static_cast<std::string>(child.child_value());
-            this->content += "Name: " + name + "\n";
-            break;
-          case ParagraphTag::Ingredient: 
-            ingredient = static_cast<std::string>(child.child_value("IngredientName"));
-            index = std::stoi(static_cast<std::string>(child.child_value("DisplayOrder")));
-            this->ingredients[index] = ingredient;
-            break;
-          case ParagraphTag::Direction: 
-            description = static_cast<std::string>(child.child_value("DirectionText"));
-            index = std::stoi(static_cast<std::string>(child.child_value("DisplayOrder")));
-            this->steps[index] = description;
-            break;
-        }
-      }
-    }
-  }
-
   std::string content;
 };
 

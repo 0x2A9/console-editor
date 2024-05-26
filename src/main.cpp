@@ -1,14 +1,8 @@
-#include <string>      
-#include <iostream>
-#include <functional>
-#include <stdlib.h>
- 
-#include "ftxui/component/captured_mouse.hpp"
-#include "ftxui/component/component.hpp"    
-#include "ftxui/component/component_base.hpp"       
+#include <string>
+
+#include "ftxui/component/component.hpp"
 #include "ftxui/component/component_options.hpp"   
-#include "ftxui/component/screen_interactive.hpp"  
-#include "ftxui/dom/elements.hpp" 
+#include "ftxui/component/screen_interactive.hpp"
 #include "pugixml.hpp"
 
 #include "utils/fs.hpp" 
