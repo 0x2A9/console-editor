@@ -8,7 +8,7 @@
 
 class ProcessorBase {
  public:
-  ProcessorBase(std::string path);
+  explicit ProcessorBase(const std::string &path);
 
   virtual std::string StringFromXml() = 0;
 

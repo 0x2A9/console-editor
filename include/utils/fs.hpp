@@ -21,11 +21,11 @@ struct Content {
 };
 
 void RenameDirs(std::string path, std::string postfix);
-struct Content GetFullPathsToContent(std::string path);
-std::vector<std::string> GetResourcesNames(std::vector<std::string> full_paths);
-std::string GetFileContent(std::string path);
-void WriteContentToFile(std::string path, std::string content);
-struct ResourcePath SplitPath(std::string& str);
-struct ResourceName SplitName(std::string str);
+struct Content GetFullPathsToContent(const std::string &path);
+std::vector<std::string> GetResourcesNames(const std::vector<std::string> &full_paths);
+std::string GetFileContent(const std::string &path);
+void WriteContentToFile(const std::string &path, const std::string &content);
+struct ResourcePath SplitPath(const std::string &str);
+struct ResourceName SplitName(const std::string &str);
 
 #endif // FS_H
