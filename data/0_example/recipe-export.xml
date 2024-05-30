@@ -1,0 +1,51 @@
+<?xml version="1.0"?>
+<Recipe>
+    <Name>EX - 0</Name>
+    <Ingredient>
+        <IngredientName>EX - 0: First Ingredient Name - its amount</IngredientName>
+        <DisplayOrder>0</DisplayOrder>
+    </Ingredient>
+    <Ingredient>
+        <IngredientName>EX - 0: Third Ingredient Name - its amount</IngredientName>
+        <DisplayOrder>2</DisplayOrder>
+    </Ingredient>
+    <Ingredient>
+        <IngredientName>EX - 0: Second Ingredient Name - its amount</IngredientName>
+        <DisplayOrder>1</DisplayOrder>
+    </Ingredient>
+    <Direction>
+        <DirectionText>EX - 0: Fifth Step</DirectionText>
+        <TextItemNumber>5</TextItemNumber>
+        <DisplayOrder>4</DisplayOrder>
+    </Direction>
+    <Direction>
+        <DirectionText>EX - 0: First Step</DirectionText>
+        <TextItemNumber>1</TextItemNumber>
+        <DisplayOrder>0</DisplayOrder>
+    </Direction>
+    <Direction>
+        <DirectionText>EX - 0: Sixth Step</DirectionText>
+        <TextItemNumber>6</TextItemNumber>
+        <DisplayOrder>5</DisplayOrder>
+    </Direction>
+    <Direction>
+        <DirectionText>EX - 0: Third Step</DirectionText>
+        <TextItemNumber>3</TextItemNumber>
+        <DisplayOrder>2</DisplayOrder>
+    </Direction>
+    <Direction>
+        <DirectionText>EX - 0: Fourth Step</DirectionText>
+        <TextItemNumber>4</TextItemNumber>
+        <DisplayOrder>3</DisplayOrder>
+    </Direction>
+    <Direction>
+        <DirectionText>EX - 0: Second Step</DirectionText>
+        <TextItemNumber>2</TextItemNumber>
+        <DisplayOrder>1</DisplayOrder>
+    </Direction>
+    <Direction>
+        <DirectionText>EX - 0: Seventh Step</DirectionText>
+        <TextItemNumber>7</TextItemNumber>
+        <DisplayOrder>6</DisplayOrder>
+    </Direction>
+</Recipe>

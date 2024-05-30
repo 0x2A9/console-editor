@@ -1,5 +1,5 @@
 build/*
-data/*
+data/*_recipe
 !data/.gitkeep
 !build/.gitkeep
 .vscode

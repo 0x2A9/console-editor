@@ -22,11 +22,15 @@ add_executable(
   include/utils/ui.hpp
   include/xml_processors/processor_base.hpp
   include/xml_processors/processor.hpp
+  include/managers/fs_manager.hpp
+  include/managers/render_manager.hpp
   src/main.cpp 
   src/utils/fs.cpp
   src/utils/ui.cpp
   src/xml_processors/processor.cpp
   src/xml_processors/recipes.cpp
+  src/managers/fs_manager.cpp
+  src/managers/render_manager.cpp
 )
 target_link_libraries(console-editor
   PRIVATE ftxui::screen
