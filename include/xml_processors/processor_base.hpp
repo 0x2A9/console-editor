@@ -1,5 +1,5 @@
-#ifndef PROCESSOR_BASE_H
-#define PROCESSOR_BASE_H
+#ifndef CONSOLE_EDITOR_XML_PROCESSORS_PROCESSOR_BASE_HPP
+#define CONSOLE_EDITOR_XML_PROCESSORS_PROCESSOR_BASE_HPP
 
 #include <string>      
 #include <functional>
@@ -13,7 +13,7 @@ class ProcessorBase {
   virtual std::string StringFromXml() = 0;
 
  protected:
-  pugi::xml_document doc;
+  pugi::xml_document doc_;
 };
 
-#endif // PROCESSOR_BASE_H
+#endif // CONSOLE_EDITOR_XML_PROCESSORS_PROCESSOR_BASE_HPP

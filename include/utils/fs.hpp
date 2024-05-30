@@ -1,10 +1,16 @@
-#ifndef FS_H
-#define FS_H
+#ifndef CONSOLE_EDITOR_UTILS_FS_HPP
+#define CONSOLE_EDITOR_UTILS_FS_HPP
 
 #include <string>
 #include <vector>
 
+// executable is placed inside the `build` dir
+static const char *kRootDir = "./..";
+// the path is relative to the project root
+static const char *kDataDir = "/data";
+
 struct ResourcePath {
+
   std::string location;
   std::string name;
 };
@@ -28,4 +34,4 @@ void WriteContentToFile(const std::string &path, const std::string &content);
 struct ResourcePath SplitPath(const std::string &str);
 struct ResourceName SplitName(const std::string &str);
 
-#endif // FS_H
+#endif // CONSOLE_EDITOR_UTILS_FS_HPP

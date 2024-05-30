@@ -1,8 +1,9 @@
+#include "xml_processors/processor_base.hpp"
+
 #include <memory>
 #include <map>
 #include <string>
 
-#include "xml_processors/processor_base.hpp"
 #include "pugixml.hpp"
 
 enum ParagraphTag {
@@ -20,58 +21,58 @@ class RecipesProcessor : public ProcessorBase {
 
     this->ParseXml();
 
-    for (auto [index, item]: this->ingredients) {
-      this->content += "Ingredient: " + item + "\n";
+    for (auto [index, item]: this->ingredients_) {
+      this->content_ += "Ingredient: " + item + "\n";
     }
 
-    for (auto [index, item]: this->steps) {
-      this->content += "Step: " + item + "\n";
+    for (auto [index, item]: this->steps_) {
+      this->content_ += "Step: " + item + "\n";
     }
 
-    return this->content;
+    return this->content_;
   }
-  
+
  protected:
-void ParseXml() {
-    std::string name;
-    std::string ingredient;
-    int index;
-    std::string description;
+  void ParseXml() {
+      std::string name;
+      std::string ingredient;
+      int index;
+      std::string description;
+  
+      for (pugi::xml_node node: this->doc_) {
+          for (pugi::xml_node child: node.children()) {
+              auto tag = static_cast<std::string>(child.name());
+              auto pt = this->mapping_[tag];
+  
+              switch(pt) {
+                  case ParagraphTag::Name:
+                      name = static_cast<std::string>(child.child_value());
+                      this->content_ += "Name: " + name + "\n";
+                      break;
+                  case ParagraphTag::Ingredient:
+                      ingredient = static_cast<std::string>(child.child_value("IngredientName"));
+                      index = std::stoi(static_cast<std::string>(child.child_value("DisplayOrder")));
+                      this->ingredients_[index] = ingredient;
+                      break;
+                  case ParagraphTag::Direction:
+                      description = static_cast<std::string>(child.child_value("DirectionText"));
+                      index = std::stoi(static_cast<std::string>(child.child_value("DisplayOrder")));
+                      this->steps_[index] = description;
+                      break;
+              }
+          }
+      }
+  }
 
-    for (pugi::xml_node node: this->doc) {
-        for (pugi::xml_node child: node.children()) {
-            auto tag = static_cast<std::string>(child.name());
-            auto pt = this->mapping[tag];
-
-            switch(pt) {
-                case ParagraphTag::Name:
-                    name = static_cast<std::string>(child.child_value());
-                    this->content += "Name: " + name + "\n";
-                    break;
-                case ParagraphTag::Ingredient:
-                    ingredient = static_cast<std::string>(child.child_value("IngredientName"));
-                    index = std::stoi(static_cast<std::string>(child.child_value("DisplayOrder")));
-                    this->ingredients[index] = ingredient;
-                    break;
-                case ParagraphTag::Direction:
-                    description = static_cast<std::string>(child.child_value("DirectionText"));
-                    index = std::stoi(static_cast<std::string>(child.child_value("DisplayOrder")));
-                    this->steps[index] = description;
-                    break;
-            }
-        }
-    }
-}
-
-  std::unordered_map<std::string, ParagraphTag> mapping = {
+  std::unordered_map<std::string, ParagraphTag> mapping_ = {
     { "Name", ParagraphTag::Name },
     { "Ingredient", ParagraphTag::Ingredient },
     { "Direction", ParagraphTag::Direction },
   };
 
-  std::map<int, std::string> ingredients;
-  std::map<int, std::string> steps;
-  std::string content;
+  std::map<int, std::string> ingredients_;
+  std::map<int, std::string> steps_;
+  std::string content_;
 };
 
 std::shared_ptr<ProcessorBase> RecipesProc(std::string path) {

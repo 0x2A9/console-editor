@@ -1,10 +1,11 @@
+#include "utils/fs.hpp"
+
+#include <sys/stat.h>
+
 #include <filesystem>
 #include <string>
-#include <sys/stat.h>
 #include <vector>
 #include <fstream>
-
-#include "utils/fs.hpp"
 
 namespace fs = std::filesystem;
 

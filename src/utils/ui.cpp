@@ -1,5 +1,7 @@
-#include "ftxui/component/component.hpp"      
-#include "ftxui/component/screen_interactive.hpp"  
+#include "utils/fs.hpp"
+
+#include "ftxui/component/component.hpp"
+#include "ftxui/component/screen_interactive.hpp"
 
 ftxui::ButtonOption ButtonStyle() {
   auto option = ftxui::ButtonOption::Animated();
@@ -17,13 +19,22 @@ ftxui::InputOption InputStyle() {
   return ftxui::InputOption::Spacious();
 }
 
-ftxui::Component CreateExitButton(const std::string &name, ftxui::ScreenInteractive &screen) {
+ftxui::MenuOption MenuStyle(ftxui::ScreenInteractive &screen) {
+  ftxui::MenuOption option;
+  option.on_enter = screen.ExitLoopClosure();
+  return option;
+}
+
+ftxui::Component CreateExitButton(const std::string &name,
+                                  ftxui::ScreenInteractive &screen) {
   return ftxui::Button(name, [&screen] { 
     screen.Exit(); 
   }, ButtonStyle());
 }
 
-void CreateForm(std::string *data, const ftxui::Components &cmps, ftxui::ScreenInteractive &screen) {
+void CreateForm(std::string *data,
+                const ftxui::Components &cmps,
+                ftxui::ScreenInteractive &screen) {
   int row = 0;
 
   auto input = ftxui::Input(data, InputStyle());
