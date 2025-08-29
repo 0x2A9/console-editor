@@ -7,9 +7,9 @@
 #include "pugixml.hpp"
 
 enum ParagraphTag {
-  Name = 1,
-  Ingredient = 2,
-  Direction = 3
+  kName = 1,
+  kIngredient = 2,
+  kDirection = 3
 };
 
 class RecipesProcessor : public ProcessorBase {
@@ -45,16 +45,16 @@ class RecipesProcessor : public ProcessorBase {
               auto pt = this->mapping_[tag];
   
               switch(pt) {
-                  case ParagraphTag::Name:
+                  case ParagraphTag::kName:
                       name = static_cast<std::string>(child.child_value());
                       this->content_ += "Name: " + name + "\n";
                       break;
-                  case ParagraphTag::Ingredient:
+                  case ParagraphTag::kIngredient:
                       ingredient = static_cast<std::string>(child.child_value("IngredientName"));
                       index = std::stoi(static_cast<std::string>(child.child_value("DisplayOrder")));
                       this->ingredients_[index] = ingredient;
                       break;
-                  case ParagraphTag::Direction:
+                  case ParagraphTag::kDirection:
                       description = static_cast<std::string>(child.child_value("DirectionText"));
                       index = std::stoi(static_cast<std::string>(child.child_value("DisplayOrder")));
                       this->steps_[index] = description;
@@ -65,9 +65,9 @@ class RecipesProcessor : public ProcessorBase {
   }
 
   std::unordered_map<std::string, ParagraphTag> mapping_ = {
-    { "Name", ParagraphTag::Name },
-    { "Ingredient", ParagraphTag::Ingredient },
-    { "Direction", ParagraphTag::Direction },
+    { "Name", ParagraphTag::kName },
+    { "Ingredient", ParagraphTag::kIngredient },
+    { "Direction", ParagraphTag::kDirection },
   };
 
   std::map<int, std::string> ingredients_;
